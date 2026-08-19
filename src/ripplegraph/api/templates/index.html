@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RippleGraph — Associative Temporal Memory</title>
+    <meta name="description" content="RippleGraph: Associative Temporal Memory for Long-Running AI Agents. Graph-based cross-session memory retrieval.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="landing">
+        <nav class="nav">
+            <div class="nav-brand">
+                <span class="logo-icon">◎</span>
+                <span class="logo-text">RippleGraph</span>
+            </div>
+            <div class="nav-links">
+                <a href="/chat" class="btn btn-primary">Open Chat</a>
+            </div>
+        </nav>
+
+        <main class="hero">
+            <div class="hero-badge">Hack Hydra 2026 — Track 03</div>
+            <h1>Associative Temporal<br>Memory for AI Agents</h1>
+            <p class="hero-sub">
+                Graph-based recollection that preserves temporal history, 
+                detects contradictions, and knows when to say <em>"I don't know."</em>
+            </p>
+            <div class="hero-actions">
+                <a href="/chat" class="btn btn-hero">Try the Demo →</a>
+                <a href="/health" class="btn btn-outline">API Health</a>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🌊</div>
+                    <h3>Ripple Expansion</h3>
+                    <p>Anchors spread through graph relationships — not just top-k vectors.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⏱</div>
+                    <h3>Temporal Reasoning</h3>
+                    <p>Handles "what was X before?" and "when did we switch to Y?" natively.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛑</div>
+                    <h3>Abstention Gate</h3>
+                    <p>Deterministic confidence gate says "I don't know" before the LLM guesses.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h3>Evidence Ledger</h3>
+                    <p>Every answer includes full provenance — session IDs, hops, and relations.</p>
+                </div>
+            </div>
+
+            <div class="pipeline-section">
+                <h2>The RippleGraph Pipeline</h2>
+                <div class="pipeline">
+                    <div class="pipeline-step">
+                        <div class="step-num">1</div>
+                        <div class="step-label">Query Plan</div>
+                    </div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-step">
+                        <div class="step-num">2</div>
+                        <div class="step-label">Anchor Retrieval</div>
+                    </div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-step">
+                        <div class="step-num">3</div>
+                        <div class="step-label">Ripple Expand</div>
+                    </div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-step">
+                        <div class="step-num">4</div>
+                        <div class="step-label">Temporal Filter</div>
+                    </div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-step">
+                        <div class="step-num">5</div>
+                        <div class="step-label">Confidence Gate</div>
+                    </div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-step">
+                        <div class="step-num">6</div>
+                        <div class="step-label">Answer</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>RippleGraph v{{ version }} · Built on <a href="https://hydradb.com" target="_blank">HydraDB</a></p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+[
+    {
+        "id": "q1",
+        "question": "What database are we using?",
+        "expected_answer_contains": ["PostgreSQL"],
+        "expected_status": "ANSWERED",
+        "expected_temporal_mode": "CURRENT",
+        "category": "current_state"
+    },
+    {
+        "id": "q2",
+        "question": "What database were we using before PostgreSQL?",
+        "expected_answer_contains": ["MongoDB"],
+        "expected_status": "ANSWERED",
+        "expected_temporal_mode": "HISTORICAL",
+        "category": "historical"
+    },
+    {
+        "id": "q3",
+        "question": "When did we switch from MongoDB to PostgreSQL?",
+        "expected_answer_contains": ["April", "2026"],
+        "expected_status": "ANSWERED",
+        "expected_temporal_mode": "TRANSITION",
+        "category": "transition"
+    },
+    {
+        "id": "q4",
+        "question": "What frontend framework are we using?",
+        "expected_answer_contains": ["React", "Next.js"],
+        "expected_status": "ANSWERED",
+        "expected_temporal_mode": "CURRENT",
+        "category": "current_state"
+    },
+    {
+        "id": "q5",
+        "question": "Where are we deploying?",
+        "expected_answer_contains": ["GCP", "Kubernetes"],
+        "expected_status": "ANSWERED",
+        "expected_temporal_mode": "CURRENT",
+        "category": "current_state"
+    },
+    {
+        "id": "q6",
+        "question": "What was our deployment platform before GCP?",
+        "expected_answer_contains": ["AWS", "ECS"],
+        "expected_status": "ANSWERED",
+        "expected_temporal_mode": "HISTORICAL",
+        "category": "historical"
+    },
+    {
+        "id": "q7",
+        "question": "What is the company's revenue this quarter?",
+        "expected_answer_contains": [],
+        "expected_status": "ABSTAINED",
+        "expected_temporal_mode": "NONE",
+        "category": "unanswerable"
+    },
+    {
+        "id": "q8",
+        "question": "What databases have we considered over time?",
+        "expected_answer_contains": ["MongoDB", "PostgreSQL"],
+        "expected_status": "ANSWERED",
+        "expected_temporal_mode": "TIMELINE",
+        "category": "timeline"
+    }
+]

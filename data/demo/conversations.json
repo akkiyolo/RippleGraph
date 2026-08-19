@@ -1,0 +1,54 @@
+[
+    {
+        "session_id": "session-1",
+        "user_id": "demo-user",
+        "messages": [
+            {"message_id": "s1-m1", "speaker": "user", "text": "We need to pick a database for the new project.", "timestamp": "2026-03-01T10:00:00"},
+            {"message_id": "s1-m2", "speaker": "assistant", "text": "What are the requirements?", "timestamp": "2026-03-01T10:01:00"},
+            {"message_id": "s1-m3", "speaker": "user", "text": "We need something flexible, schema-less. Let's go with MongoDB.", "timestamp": "2026-03-01T10:02:00"},
+            {"message_id": "s1-m4", "speaker": "assistant", "text": "Got it. MongoDB it is for the project database.", "timestamp": "2026-03-01T10:03:00"}
+        ]
+    },
+    {
+        "session_id": "session-2",
+        "user_id": "demo-user",
+        "messages": [
+            {"message_id": "s2-m1", "speaker": "user", "text": "The frontend team prefers React for the UI framework.", "timestamp": "2026-03-05T14:00:00"},
+            {"message_id": "s2-m2", "speaker": "assistant", "text": "React is a solid choice. Should we use Next.js or plain React?", "timestamp": "2026-03-05T14:01:00"},
+            {"message_id": "s2-m3", "speaker": "user", "text": "Let's use Next.js for server-side rendering.", "timestamp": "2026-03-05T14:02:00"},
+            {"message_id": "s2-m4", "speaker": "assistant", "text": "Perfect. Next.js with React for the frontend.", "timestamp": "2026-03-05T14:03:00"},
+            {"message_id": "s2-m5", "speaker": "user", "text": "Also, the deployment will be on AWS using ECS.", "timestamp": "2026-03-05T14:05:00"},
+            {"message_id": "s2-m6", "speaker": "assistant", "text": "Noted. AWS ECS for deployment.", "timestamp": "2026-03-05T14:06:00"}
+        ]
+    },
+    {
+        "session_id": "session-3",
+        "user_id": "demo-user",
+        "messages": [
+            {"message_id": "s3-m1", "speaker": "user", "text": "We ran into scaling issues with MongoDB. We need to switch to PostgreSQL.", "timestamp": "2026-04-15T09:00:00"},
+            {"message_id": "s3-m2", "speaker": "assistant", "text": "That's a significant change. What prompted this?", "timestamp": "2026-04-15T09:01:00"},
+            {"message_id": "s3-m3", "speaker": "user", "text": "The relational queries are killing performance. PostgreSQL handles joins much better.", "timestamp": "2026-04-15T09:02:00"},
+            {"message_id": "s3-m4", "speaker": "assistant", "text": "Understood. Switching from MongoDB to PostgreSQL for the project database.", "timestamp": "2026-04-15T09:03:00"}
+        ]
+    },
+    {
+        "session_id": "session-4",
+        "user_id": "demo-user",
+        "messages": [
+            {"message_id": "s4-m1", "speaker": "user", "text": "The team has decided to use Tailwind CSS for styling instead of plain CSS.", "timestamp": "2026-04-20T11:00:00"},
+            {"message_id": "s4-m2", "speaker": "assistant", "text": "Tailwind is great for rapid prototyping. Good choice.", "timestamp": "2026-04-20T11:01:00"},
+            {"message_id": "s4-m3", "speaker": "user", "text": "We also decided the API will use GraphQL instead of REST.", "timestamp": "2026-04-20T11:05:00"},
+            {"message_id": "s4-m4", "speaker": "assistant", "text": "GraphQL with Next.js is a common pattern. Makes sense.", "timestamp": "2026-04-20T11:06:00"}
+        ]
+    },
+    {
+        "session_id": "session-5",
+        "user_id": "demo-user",
+        "messages": [
+            {"message_id": "s5-m1", "speaker": "user", "text": "Quick update: we're moving deployment from AWS ECS to Kubernetes on GCP.", "timestamp": "2026-05-10T16:00:00"},
+            {"message_id": "s5-m2", "speaker": "assistant", "text": "That's a major infrastructure change. What's the reason?", "timestamp": "2026-05-10T16:01:00"},
+            {"message_id": "s5-m3", "speaker": "user", "text": "GCP offers better pricing for our workload and the team has more K8s experience.", "timestamp": "2026-05-10T16:02:00"},
+            {"message_id": "s5-m4", "speaker": "assistant", "text": "Makes sense. Kubernetes on GCP it is.", "timestamp": "2026-05-10T16:03:00"}
+        ]
+    }
+]

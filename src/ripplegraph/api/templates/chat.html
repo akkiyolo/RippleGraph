@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RippleGraph Chat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="chat-app">
+        <nav class="chat-nav">
+            <a href="/" class="nav-brand">
+                <span class="logo-icon">◎</span>
+                <span class="logo-text">RippleGraph</span>
+            </a>
+            <div class="nav-actions">
+                <button id="seed-btn" class="btn btn-sm btn-outline" title="Load demo conversations">Seed Demo Data</button>
+                <span class="status-dot" id="status-dot"></span>
+            </div>
+        </nav>
+
+        <div class="chat-container">
+            <div class="messages" id="messages">
+                <div class="message system-message">
+                    <div class="message-content">
+                        <p>Welcome to <strong>RippleGraph</strong> — Associative Temporal Memory.</p>
+                        <p class="hint">Try asking: <em>"What database are we using?"</em> or <em>"What was our database before PostgreSQL?"</em></p>
+                        <p class="hint">First, click <strong>Seed Demo Data</strong> to load sample conversations.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <form id="chat-form">
+                    <div class="input-wrapper">
+                        <textarea id="query-input" placeholder="Ask about your agent's memory..." rows="1" autofocus></textarea>
+                        <button type="submit" id="send-btn" class="btn-send" title="Send">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const messagesEl = document.getElementById('messages');
+    const form = document.getElementById('chat-form');
+    const input = document.getElementById('query-input');
+    const seedBtn = document.getElementById('seed-btn');
+    const statusDot = document.getElementById('status-dot');
+
+    // Auto-resize textarea
+    input.addEventListener('input', () => {
+        input.style.height = 'auto';
+        input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+    });
+
+    // Enter to send (shift+enter for newline)
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            form.dispatchEvent(new Event('submit'));
+        }
+    });
+
+    function addMessage(content, type, meta = null) {
+        const div = document.createElement('div');
+        div.className = `message ${type}-message`;
+        
+        let html = `<div class="message-content">${content}</div>`;
+        
+        if (meta) {
+            html += `<div class="message-meta">`;
+            if (meta.status) {
+                const statusClass = meta.status === 'ANSWERED' ? 'status-answered' : 'status-abstained';
+                html += `<span class="meta-badge ${statusClass}">${meta.status}</span>`;
+            }
+            if (meta.confidence !== undefined) {
+                const confClass = meta.confidence >= 0.7 ? 'conf-high' : meta.confidence >= 0.4 ? 'conf-mid' : 'conf-low';
+                html += `<span class="meta-badge ${confClass}">Confidence: ${(meta.confidence * 100).toFixed(0)}%</span>`;
+            }
+            if (meta.temporal_mode && meta.temporal_mode !== 'NONE') {
+                html += `<span class="meta-badge meta-temporal">${meta.temporal_mode}</span>`;
+            }
+            if (meta.latency_ms) {
+                html += `<span class="meta-badge meta-latency">${meta.latency_ms.toFixed(0)}ms</span>`;
+            }
+            html += `</div>`;
+            
+            // Evidence section
+            if (meta.evidence && meta.evidence.length > 0) {
+                html += `<details class="evidence-details"><summary>Evidence (${meta.evidence.length} nodes)</summary><div class="evidence-list">`;
+                for (const e of meta.evidence) {
+                    html += `<div class="evidence-item">
+                        <span class="evidence-hop">hop ${e.hop}</span>
+                        <span class="evidence-text">${escapeHtml(e.text)}</span>
+                        ${e.session_id ? `<span class="evidence-session">${e.session_id}</span>` : ''}
+                    </div>`;
+                }
+                html += `</div></details>`;
+            }
+        }
+        
+        div.innerHTML = html;
+        messagesEl.appendChild(div);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function addLoading() {
+        const div = document.createElement('div');
+        div.className = 'message assistant-message loading-message';
+        div.id = 'loading';
+        div.innerHTML = `<div class="message-content"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+        messagesEl.appendChild(div);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function removeLoading() {
+        const el = document.getElementById('loading');
+        if (el) el.remove();
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const query = input.value.trim();
+        if (!query) return;
+
+        addMessage(`<p>${escapeHtml(query)}</p>`, 'user');
+        input.value = '';
+        input.style.height = 'auto';
+        addLoading();
+
+        try {
+            const res = await fetch('/answer', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({question: query}),
+            });
+            removeLoading();
+
+            if (!res.ok) {
+                const err = await res.json();
+                addMessage(`<p class="error">Error: ${err.detail || 'Unknown error'}</p>`, 'assistant');
+                return;
+            }
+
+            const data = await res.json();
+            const answerText = data.answer || data.reason || 'No answer available.';
+            addMessage(`<p>${escapeHtml(answerText)}</p>`, 'assistant', {
+                status: data.status,
+                confidence: data.confidence,
+                temporal_mode: data.temporal_mode,
+                latency_ms: data.latency_ms,
+                evidence: data.evidence || [],
+            });
+        } catch (err) {
+            removeLoading();
+            addMessage(`<p class="error">Network error: ${err.message}</p>`, 'assistant');
+        }
+    });
+
+    seedBtn.addEventListener('click', async () => {
+        seedBtn.disabled = true;
+        seedBtn.textContent = 'Seeding...';
+        try {
+            const res = await fetch('/demo/seed', {method: 'POST'});
+            const data = await res.json();
+            if (res.ok) {
+                addMessage(`<p>✅ ${data.message || `Seeded ${data.memories_created} memories.`}</p>`, 'system');
+            } else {
+                addMessage(`<p class="error">Seed failed: ${data.detail || 'Unknown error'}</p>`, 'system');
+            }
+        } catch (err) {
+            addMessage(`<p class="error">Seed failed: ${err.message}</p>`, 'system');
+        }
+        seedBtn.disabled = false;
+        seedBtn.textContent = 'Seed Demo Data';
+    });
+
+    // Health check
+    fetch('/health').then(r => r.json()).then(d => {
+        statusDot.classList.add(d.status === 'ok' ? 'status-ok' : 'status-err');
+    }).catch(() => statusDot.classList.add('status-err'));
+    </script>
+</body>
+</html>
