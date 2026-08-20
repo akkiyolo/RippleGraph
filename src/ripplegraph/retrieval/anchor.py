@@ -1,11 +1,12 @@
-"""Anchor retrieval — high-quality initial memory retrieval."""
+"""Anchor retrieval — PostgreSQL full-text search for initial memories."""
 
 from __future__ import annotations
 
 import logging
+from datetime import datetime
 from typing import Any
 
-from ripplegraph.clients.hydra_client import HydraClient
+from ripplegraph.clients.pg_store import PgStore
 from ripplegraph.models.evidence import EvidenceNode
 from ripplegraph.models.query import QueryPlan
 
@@ -14,68 +15,36 @@ logger = logging.getLogger(__name__)
 
 def retrieve_anchors(
     plan: QueryPlan,
-    hydra: HydraClient,
+    store: PgStore,
     max_anchors: int = 5,
 ) -> list[EvidenceNode]:
-    """Retrieve a small number of high-quality initial memories.
-
-    Uses HydraDB's semantic/hybrid search to find the best starting
-    points for graph expansion. Does NOT perform graph expansion.
-    """
-    result = hydra.query(
+    """Retrieve initial high-quality memories via PostgreSQL full-text search."""
+    results = store.search_memories(
         query=plan.original_query,
         max_results=max_anchors,
-        graph_context=True,
-        mode="thinking",
     )
 
     anchors: list[EvidenceNode] = []
-    if not result or not result.data:
-        return anchors
-
-    chunks = result.data.chunks or []
-    for i, chunk in enumerate(chunks):
-        # Extract metadata from the chunk
-        chunk_id = getattr(chunk, "id", "") or getattr(chunk, "chunk_id", "") or f"chunk-{i}"
-        text = getattr(chunk, "text", "") or getattr(chunk, "content", "") or ""
-        score = getattr(chunk, "score", 0.0) or getattr(chunk, "relevance_score", 0.0) or 0.0
-
-        # Extract additional metadata
-        add_meta = getattr(chunk, "additional_metadata", {}) or {}
-        if isinstance(add_meta, str):
-            import json
+    for row in results:
+        ts = row.get("valid_from") or row.get("created_at")
+        if isinstance(ts, str):
             try:
-                add_meta = json.loads(add_meta)
+                ts = datetime.fromisoformat(ts)
             except Exception:
-                add_meta = {}
+                ts = None
 
-        session_id = add_meta.get("session_id", "")
-        source_id = getattr(chunk, "source_id", "") or add_meta.get("source_id", chunk_id)
-
-        # Parse timestamp
-        ts = None
-        ts_str = add_meta.get("created_at", "")
-        if ts_str:
-            try:
-                from datetime import datetime
-                ts = datetime.fromisoformat(ts_str)
-            except Exception:
-                pass
+        score = float(row.get("rank", 0.5))
 
         node = EvidenceNode(
-            memory_id=source_id,
-            text=text,
-            session_id=session_id,
+            memory_id=row["id"],
+            text=row["text"],
+            session_id=row.get("session_id", ""),
             timestamp=ts,
-            anchor_score=float(score),
-            semantic_score=float(score),
+            anchor_score=score,
+            semantic_score=score,
             hop=0,
         )
         anchors.append(node)
 
-    logger.info(
-        "Retrieved %d anchors for query: %s",
-        len(anchors),
-        plan.original_query[:50],
-    )
+    logger.info("Retrieved %d anchors for: %s", len(anchors), plan.original_query[:50])
     return anchors

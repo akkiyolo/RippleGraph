@@ -3,98 +3,416 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RippleGraph — Associative Temporal Memory</title>
-    <meta name="description" content="RippleGraph: Associative Temporal Memory for Long-Running AI Agents. Graph-based cross-session memory retrieval.">
+
+    <title>RippleGraph</title>
+
+    <meta
+        name="description"
+        content="RippleGraph is a graph-based temporal memory system for long-running AI agents."
+    >
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet"
+    >
+
     <link rel="stylesheet" href="/static/style.css">
 </head>
+
 <body>
-    <div class="landing">
-        <nav class="nav">
-            <div class="nav-brand">
-                <span class="logo-icon">◎</span>
-                <span class="logo-text">RippleGraph</span>
-            </div>
-            <div class="nav-links">
-                <a href="/chat" class="btn btn-primary">Open Chat</a>
-            </div>
-        </nav>
 
-        <main class="hero">
-            <div class="hero-badge">Hack Hydra 2026 — Track 03</div>
-            <h1>Associative Temporal<br>Memory for AI Agents</h1>
-            <p class="hero-sub">
-                Graph-based recollection that preserves temporal history, 
-                detects contradictions, and knows when to say <em>"I don't know."</em>
-            </p>
-            <div class="hero-actions">
-                <a href="/chat" class="btn btn-hero">Try the Demo →</a>
-                <a href="/health" class="btn btn-outline">API Health</a>
+<div class="site">
+
+    <!-- Navigation -->
+    <header class="site-nav">
+
+        <a href="/" class="brand">
+            <span class="brand-mark">
+                R
+            </span>
+
+            <span class="brand-name">
+                RippleGraph
+            </span>
+        </a>
+
+        <div class="nav-right">
+            <span class="nav-version">
+                v{{ version }}
+            </span>
+
+            <a href="/chat" class="nav-link">
+                Open workspace
+            </a>
+        </div>
+
+    </header>
+
+
+    <!-- Main -->
+    <main>
+
+        <!-- Hero -->
+        <section class="hero-section">
+
+            <div class="hero-copy">
+
+                <div class="eyebrow">
+                    <span class="eyebrow-dot"></span>
+                    Hack Hydra 2026 · Track 03
+                </div>
+
+                <h1>
+                    Memory that keeps<br>
+                    the <span>timeline</span>.
+                </h1>
+
+                <p class="hero-description">
+                    RippleGraph gives long-running AI agents a structured memory
+                    layer that connects related events, preserves their history,
+                    and retrieves evidence across sessions.
+                </p>
+
+                <div class="hero-actions">
+
+                    <a href="/chat" class="primary-action">
+                        Open workspace
+                        <span>↗</span>
+                    </a>
+
+                    <a href="/health" class="secondary-action">
+                        Check API
+                    </a>
+
+                </div>
+
             </div>
 
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🌊</div>
-                    <h3>Ripple Expansion</h3>
-                    <p>Anchors spread through graph relationships — not just top-k vectors.</p>
+
+            <!-- Small architecture preview -->
+            <div class="architecture-preview">
+
+                <div class="preview-header">
+
+                    <div>
+                        <span class="preview-label">MEMORY GRAPH</span>
+                        <span class="preview-status">
+                            <span></span>
+                            online
+                        </span>
+                    </div>
+
+                    <span class="preview-code">
+                        graph://memory
+                    </span>
+
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⏱</div>
-                    <h3>Temporal Reasoning</h3>
-                    <p>Handles "what was X before?" and "when did we switch to Y?" natively.</p>
+
+
+                <div class="graph-preview">
+
+                    <div class="graph-line line-one"></div>
+                    <div class="graph-line line-two"></div>
+                    <div class="graph-line line-three"></div>
+
+                    <div class="graph-node node-main">
+                        <span class="node-type">CURRENT</span>
+                        PostgreSQL
+                    </div>
+
+                    <div class="graph-node node-left">
+                        <span class="node-type">PREVIOUS</span>
+                        MongoDB
+                    </div>
+
+                    <div class="graph-node node-right">
+                        <span class="node-type">SESSION</span>
+                        architecture review
+                    </div>
+
+                    <div class="graph-node node-bottom">
+                        <span class="node-type">EVENT</span>
+                        migration
+                    </div>
+
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🛑</div>
-                    <h3>Abstention Gate</h3>
-                    <p>Deterministic confidence gate says "I don't know" before the LLM guesses.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📋</div>
-                    <h3>Evidence Ledger</h3>
-                    <p>Every answer includes full provenance — session IDs, hops, and relations.</p>
-                </div>
+
             </div>
 
-            <div class="pipeline-section">
-                <h2>The RippleGraph Pipeline</h2>
-                <div class="pipeline">
-                    <div class="pipeline-step">
-                        <div class="step-num">1</div>
-                        <div class="step-label">Query Plan</div>
+        </section>
+
+
+        <!-- What it does -->
+        <section class="section">
+
+            <div class="section-heading">
+
+                <span class="section-kicker">
+                    WHY RIPPLEGRAPH
+                </span>
+
+                <h2>
+                    Retrieval is more than similarity.
+                </h2>
+
+                <p>
+                    A useful memory system needs to understand relationships,
+                    time, confidence, and where an answer came from.
+                </p>
+
+            </div>
+
+
+            <div class="capabilities">
+
+                <article class="capability">
+
+                    <div class="capability-number">
+                        01
                     </div>
-                    <div class="pipeline-arrow">→</div>
-                    <div class="pipeline-step">
-                        <div class="step-num">2</div>
-                        <div class="step-label">Anchor Retrieval</div>
+
+                    <div>
+                        <h3>Graph retrieval</h3>
+
+                        <p>
+                            Start from relevant memories and follow connected
+                            relationships instead of stopping at the nearest
+                            vector matches.
+                        </p>
                     </div>
-                    <div class="pipeline-arrow">→</div>
-                    <div class="pipeline-step">
-                        <div class="step-num">3</div>
-                        <div class="step-label">Ripple Expand</div>
+
+                </article>
+
+
+                <article class="capability">
+
+                    <div class="capability-number">
+                        02
                     </div>
-                    <div class="pipeline-arrow">→</div>
-                    <div class="pipeline-step">
-                        <div class="step-num">4</div>
-                        <div class="step-label">Temporal Filter</div>
+
+                    <div>
+                        <h3>Temporal context</h3>
+
+                        <p>
+                            Distinguish what is true now from what used to be
+                            true. Previous decisions remain part of the memory.
+                        </p>
                     </div>
-                    <div class="pipeline-arrow">→</div>
-                    <div class="pipeline-step">
-                        <div class="step-num">5</div>
-                        <div class="step-label">Confidence Gate</div>
+
+                </article>
+
+
+                <article class="capability">
+
+                    <div class="capability-number">
+                        03
                     </div>
-                    <div class="pipeline-arrow">→</div>
-                    <div class="pipeline-step">
-                        <div class="step-num">6</div>
-                        <div class="step-label">Answer</div>
+
+                    <div>
+                        <h3>Confidence gating</h3>
+
+                        <p>
+                            Retrieval confidence is evaluated before generating
+                            an answer, allowing the system to abstain when the
+                            evidence is weak.
+                        </p>
+                    </div>
+
+                </article>
+
+
+                <article class="capability">
+
+                    <div class="capability-number">
+                        04
+                    </div>
+
+                    <div>
+                        <h3>Evidence tracking</h3>
+
+                        <p>
+                            Answers can be traced back to the memories, sessions,
+                            and graph hops that contributed to the result.
+                        </p>
+                    </div>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- Pipeline -->
+        <section class="section pipeline-section">
+
+            <div class="section-heading">
+
+                <span class="section-kicker">
+                    UNDER THE HOOD
+                </span>
+
+                <h2>
+                    From question to evidence.
+                </h2>
+
+            </div>
+
+
+            <div class="pipeline">
+
+                <div class="pipeline-item">
+                    <span class="pipeline-index">01</span>
+                    <div>
+                        <strong>Query plan</strong>
+                        <small>Understand the question</small>
                     </div>
                 </div>
-            </div>
-        </main>
 
-        <footer class="footer">
-            <p>RippleGraph v{{ version }} · Built on <a href="https://hydradb.com" target="_blank">HydraDB</a></p>
-        </footer>
-    </div>
+                <span class="pipeline-separator">/</span>
+
+                <div class="pipeline-item">
+                    <span class="pipeline-index">02</span>
+                    <div>
+                        <strong>Anchor retrieval</strong>
+                        <small>Find relevant memories</small>
+                    </div>
+                </div>
+
+                <span class="pipeline-separator">/</span>
+
+                <div class="pipeline-item">
+                    <span class="pipeline-index">03</span>
+                    <div>
+                        <strong>Graph expansion</strong>
+                        <small>Follow relationships</small>
+                    </div>
+                </div>
+
+                <span class="pipeline-separator">/</span>
+
+                <div class="pipeline-item">
+                    <span class="pipeline-index">04</span>
+                    <div>
+                        <strong>Temporal filter</strong>
+                        <small>Resolve historical context</small>
+                    </div>
+                </div>
+
+                <span class="pipeline-separator">/</span>
+
+                <div class="pipeline-item">
+                    <span class="pipeline-index">05</span>
+                    <div>
+                        <strong>Confidence</strong>
+                        <small>Evaluate the evidence</small>
+                    </div>
+                </div>
+
+                <span class="pipeline-separator">/</span>
+
+                <div class="pipeline-item pipeline-final">
+                    <span class="pipeline-index">06</span>
+                    <div>
+                        <strong>Answer</strong>
+                        <small>Return with provenance</small>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Example -->
+        <section class="section example-section">
+
+            <div class="example-copy">
+
+                <span class="section-kicker">
+                    A SIMPLE EXAMPLE
+                </span>
+
+                <h2>
+                    Ask about the past.
+                </h2>
+
+                <p>
+                    The same agent may have used several databases over time.
+                    RippleGraph can distinguish the current state from an
+                    earlier decision.
+                </p>
+
+                <a href="/chat" class="text-link">
+                    Try it yourself <span>→</span>
+                </a>
+
+            </div>
+
+
+            <div class="example-terminal">
+
+                <div class="terminal-bar">
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                    <label>
+                        ripplegraph
+                    </label>
+
+                </div>
+
+                <div class="terminal-body">
+
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">&gt;</span>
+                        What was our database before PostgreSQL?
+                    </div>
+
+                    <div class="terminal-response">
+                        MongoDB was used before the migration to PostgreSQL.
+                    </div>
+
+                    <div class="terminal-meta">
+                        <span>ANSWERED</span>
+                        <span>confidence 0.91</span>
+                        <span>3 hops</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="site-footer">
+
+        <span>
+            RippleGraph
+        </span>
+
+        <span>
+            Built with HydraDB · Hack Hydra 2026
+        </span>
+
+        <a
+            href="https://hydradb.com"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            hydradb.com ↗
+        </a>
+
+    </footer>
+
+</div>
+
 </body>
 </html>

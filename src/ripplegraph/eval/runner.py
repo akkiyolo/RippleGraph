@@ -7,7 +7,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from ripplegraph.clients.hydra_client import HydraClient
+from ripplegraph.clients.pg_store import PgStore
 from ripplegraph.clients.llm_client import LLMClient
 from ripplegraph.config import Settings
 from ripplegraph.retrieval.query import execute_query
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 def run_evaluation(
     eval_path: str | Path,
-    hydra: HydraClient,
+    store: PgStore,
     llm: LLMClient,
     settings: Settings,
 ) -> dict[str, Any]:
@@ -41,7 +41,7 @@ def run_evaluation(
 
         logger.info("Eval [%s]: %s", qid, question)
 
-        result = execute_query(question, hydra, llm, settings)
+        result = execute_query(question, store, llm, settings)
 
         # Status check
         status_match = result.status.value == expected_status

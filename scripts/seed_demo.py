@@ -1,14 +1,10 @@
-"""Seed demo data into HydraDB."""
+"""Seed demo data into PostgreSQL."""
 
-import json
 import logging
-import sys
 
-from ripplegraph.clients.hydra_client import HydraClient
-from ripplegraph.clients.llm_client import create_llm_client
+from ripplegraph.clients.pg_store import PgStore
 from ripplegraph.config import get_settings
-from ripplegraph.ingestion.ingest import IngestionPipeline
-from ripplegraph.ingestion.loader import load_conversations
+from ripplegraph.ingestion.seed import seed_demo_data
 from ripplegraph.logging_config import setup_logging
 
 logger = logging.getLogger(__name__)
@@ -20,27 +16,14 @@ def main() -> None:
 
     logger.info("=== RippleGraph Demo Seed ===")
 
-    # Initialize clients
-    hydra = HydraClient(settings)
-    hydra.ensure_database()
-    llm = create_llm_client(settings)
-
-    # Load conversations
-    conversations_path = sys.argv[1] if len(sys.argv) > 1 else "data/demo/conversations.json"
-    sessions = load_conversations(conversations_path)
-    logger.info("Loaded %d sessions", len(sessions))
+    # Initialize PostgreSQL
+    store = PgStore(settings)
+    store.initialize()
 
     # Run ingestion pipeline
-    pipeline = IngestionPipeline(hydra, llm)
-    memories = pipeline.ingest_sessions(sessions)
+    count = seed_demo_data(store, "demo-user")
 
-    logger.info("=== Seed Complete: %d memories created ===", len(memories))
-
-    # Print summary
-    for mem in memories:
-        print(f"  [{mem.type.value:18s}] {mem.id}: {mem.text[:80]}")
-        if mem.supersedes_id:
-            print(f"    ↳ supersedes: {mem.supersedes_id}")
+    logger.info("=== Seed Complete: %d memories created ===", count)
 
 
 if __name__ == "__main__":

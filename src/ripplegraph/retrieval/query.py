@@ -1,12 +1,12 @@
-"""Complete query pipeline orchestrator."""
+"""Complete query pipeline orchestrator — PostgreSQL backed."""
 
 from __future__ import annotations
 
 import logging
 import time
 
-from ripplegraph.clients.hydra_client import HydraClient
 from ripplegraph.clients.llm_client import LLMClient
+from ripplegraph.clients.pg_store import PgStore
 from ripplegraph.config import Settings
 from ripplegraph.models.results import QueryResult, QueryStatus
 from ripplegraph.retrieval.anchor import retrieve_anchors
@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 def execute_query(
     question: str,
-    hydra: HydraClient,
+    store: PgStore,
     llm: LLMClient,
     settings: Settings,
 ) -> QueryResult:
@@ -30,8 +30,8 @@ def execute_query(
 
     Pipeline:
     1. Query Planning (temporal mode + entities)
-    2. Anchor Retrieval (initial high-quality memories)
-    3. Associative Graph Expansion (ripple outward)
+    2. Anchor Retrieval (PostgreSQL full-text search)
+    3. Associative Graph Expansion (PostgreSQL relations)
     4. Temporal Filtering
     5. Conflict Resolution
     6. Evidence Ledger
@@ -46,10 +46,10 @@ def execute_query(
     logger.info("Query plan: mode=%s, entities=%s", plan.temporal_mode, plan.entities)
 
     # 2. Anchor retrieval
-    anchors = retrieve_anchors(plan, hydra, max_anchors=5)
+    anchors = retrieve_anchors(plan, store, max_anchors=5)
 
     # 3. Associative expansion
-    evidence = expand_from_anchors(anchors, hydra, settings)
+    evidence = expand_from_anchors(anchors, store, settings)
 
     # 4. Temporal filtering
     evidence = apply_temporal_filter(evidence, plan.temporal_mode, plan.relevant_time)

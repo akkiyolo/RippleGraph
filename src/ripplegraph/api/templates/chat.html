@@ -1,197 +1,755 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RippleGraph Chat</title>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>RippleGraph — Workspace</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet"
+    >
+
     <link rel="stylesheet" href="/static/style.css">
+
 </head>
+
+
 <body>
-    <div class="chat-app">
-        <nav class="chat-nav">
-            <a href="/" class="nav-brand">
-                <span class="logo-icon">◎</span>
-                <span class="logo-text">RippleGraph</span>
-            </a>
-            <div class="nav-actions">
-                <button id="seed-btn" class="btn btn-sm btn-outline" title="Load demo conversations">Seed Demo Data</button>
-                <span class="status-dot" id="status-dot"></span>
-            </div>
-        </nav>
 
-        <div class="chat-container">
-            <div class="messages" id="messages">
-                <div class="message system-message">
-                    <div class="message-content">
-                        <p>Welcome to <strong>RippleGraph</strong> — Associative Temporal Memory.</p>
-                        <p class="hint">Try asking: <em>"What database are we using?"</em> or <em>"What was our database before PostgreSQL?"</em></p>
-                        <p class="hint">First, click <strong>Seed Demo Data</strong> to load sample conversations.</p>
-                    </div>
+<div class="workspace">
+
+    <!-- Top bar -->
+    <header class="workspace-nav">
+
+        <a href="/" class="brand">
+
+            <span class="brand-mark">
+                R
+            </span>
+
+            <span class="brand-name">
+                RippleGraph
+            </span>
+
+        </a>
+
+
+        <div class="workspace-nav-right">
+
+            <span class="workspace-label">
+                MEMORY WORKSPACE
+            </span>
+
+            <span
+                class="status-indicator"
+                id="status-dot"
+                title="API status"
+            ></span>
+
+            <button
+                id="seed-btn"
+                class="seed-button"
+                type="button"
+            >
+                Load sample memory
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- Main workspace -->
+    <main class="chat-layout">
+
+        <section class="conversation">
+
+            <div class="conversation-header">
+
+                <div>
+
+                    <span class="conversation-kicker">
+                        TEMPORAL MEMORY
+                    </span>
+
+                    <h1>
+                        Ask the memory.
+                    </h1>
+
                 </div>
+
+                <span class="session-label">
+                    session / current
+                </span>
+
             </div>
 
-            <div class="input-area">
-                <form id="chat-form">
-                    <div class="input-wrapper">
-                        <textarea id="query-input" placeholder="Ask about your agent's memory..." rows="1" autofocus></textarea>
-                        <button type="submit" id="send-btn" class="btn-send" title="Send">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-                            </svg>
-                        </button>
+
+            <div
+                class="messages"
+                id="messages"
+            >
+
+                <div class="welcome-message">
+
+                    <div class="welcome-mark">
+                        R
                     </div>
+
+                    <div>
+
+                        <h2>
+                            RippleGraph is ready.
+                        </h2>
+
+                        <p>
+                            Ask a question about information stored across
+                            previous conversations.
+                        </p>
+
+                        <div class="example-questions">
+
+                            <button
+                                type="button"
+                                class="example-question"
+                                data-question="What database are we using?"
+                            >
+                                What database are we using?
+                            </button>
+
+                            <button
+                                type="button"
+                                class="example-question"
+                                data-question="What was our database before PostgreSQL?"
+                            >
+                                What was our database before PostgreSQL?
+                            </button>
+
+                            <button
+                                type="button"
+                                class="example-question"
+                                data-question="When did we switch to PostgreSQL?"
+                            >
+                                When did we switch to PostgreSQL?
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Input -->
+            <div class="composer">
+
+                <form id="chat-form">
+
+                    <div class="composer-box">
+
+                        <textarea
+                            id="query-input"
+                            rows="1"
+                            placeholder="Ask a question about the agent's memory..."
+                            autocomplete="off"
+                            autofocus
+                        ></textarea>
+
+                        <div class="composer-footer">
+
+                            <span class="composer-hint">
+                                Enter to send · Shift + Enter for newline
+                            </span>
+
+                            <button
+                                type="submit"
+                                id="send-btn"
+                                class="send-button"
+                                title="Send message"
+                            >
+                                <svg
+                                    width="17"
+                                    height="17"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                >
+                                    <path d="M22 2L11 13"></path>
+                                    <path d="M22 2L15 22L11 13L2 9L22 2"></path>
+                                </svg>
+                            </button>
+
+                        </div>
+
+                    </div>
+
                 </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script>
+
+const messagesEl = document.getElementById('messages');
+const form = document.getElementById('chat-form');
+const input = document.getElementById('query-input');
+const seedBtn = document.getElementById('seed-btn');
+const statusDot = document.getElementById('status-dot');
+const sendBtn = document.getElementById('send-btn');
+
+
+/* -------------------------------------------------------
+   Textarea
+------------------------------------------------------- */
+
+function resizeInput() {
+
+    input.style.height = 'auto';
+
+    input.style.height =
+        Math.min(input.scrollHeight, 140) + 'px';
+}
+
+
+input.addEventListener('input', resizeInput);
+
+
+/* -------------------------------------------------------
+   Keyboard
+------------------------------------------------------- */
+
+input.addEventListener('keydown', (event) => {
+
+    if (
+        event.key === 'Enter' &&
+        !event.shiftKey
+    ) {
+
+        event.preventDefault();
+
+        form.requestSubmit();
+
+    }
+
+});
+
+
+/* -------------------------------------------------------
+   HTML escaping
+------------------------------------------------------- */
+
+function escapeHtml(text) {
+
+    const div = document.createElement('div');
+
+    div.textContent = text;
+
+    return div.innerHTML;
+
+}
+
+
+/* -------------------------------------------------------
+   Messages
+------------------------------------------------------- */
+
+function addMessage(content, type, meta = null) {
+
+    const message = document.createElement('div');
+
+    message.className = `message ${type}-message`;
+
+
+    let html = `
+        <div class="message-row">
+
+            <div class="message-avatar">
+                ${type === 'user' ? 'Y' : 'R'}
+            </div>
+
+            <div class="message-main">
+
+                <div class="message-author">
+                    ${type === 'user' ? 'You' : 'RippleGraph'}
+                </div>
+
+                <div class="message-content">
+                    ${content}
+                </div>
+    `;
+
+
+    if (meta) {
+
+        html += `
+            <div class="message-meta">
+        `;
+
+
+        if (meta.status) {
+
+            const statusClass =
+                meta.status === 'ANSWERED'
+                    ? 'answered'
+                    : 'abstained';
+
+            html += `
+                <span class="meta-item ${statusClass}">
+                    ${escapeHtml(meta.status)}
+                </span>
+            `;
+
+        }
+
+
+        if (meta.confidence !== undefined) {
+
+            const confidence =
+                Math.round(meta.confidence * 100);
+
+            html += `
+                <span class="meta-item">
+                    confidence ${confidence}%
+                </span>
+            `;
+
+        }
+
+
+        if (
+            meta.temporal_mode &&
+            meta.temporal_mode !== 'NONE'
+        ) {
+
+            html += `
+                <span class="meta-item">
+                    ${escapeHtml(meta.temporal_mode)}
+                </span>
+            `;
+
+        }
+
+
+        if (meta.latency_ms) {
+
+            html += `
+                <span class="meta-item">
+                    ${meta.latency_ms.toFixed(0)}ms
+                </span>
+            `;
+
+        }
+
+
+        html += `</div>`;
+
+
+        if (
+            meta.evidence &&
+            meta.evidence.length > 0
+        ) {
+
+            html += `
+                <details class="evidence">
+                    <summary>
+                        ${meta.evidence.length}
+                        evidence nodes
+                    </summary>
+
+                    <div class="evidence-list">
+            `;
+
+
+            for (const evidence of meta.evidence) {
+
+                html += `
+                    <div class="evidence-row">
+
+                        <span class="evidence-hop">
+                            hop ${evidence.hop}
+                        </span>
+
+                        <span class="evidence-text">
+                            ${escapeHtml(evidence.text)}
+                        </span>
+
+                        ${
+                            evidence.session_id
+                            ? `
+                                <span class="evidence-session">
+                                    ${escapeHtml(
+                                        evidence.session_id
+                                    )}
+                                </span>
+                            `
+                            : ''
+                        }
+
+                    </div>
+                `;
+
+            }
+
+
+            html += `
+                    </div>
+                </details>
+            `;
+
+        }
+
+    }
+
+
+    html += `
             </div>
         </div>
     </div>
+    `;
 
-    <script>
-    const messagesEl = document.getElementById('messages');
-    const form = document.getElementById('chat-form');
-    const input = document.getElementById('query-input');
-    const seedBtn = document.getElementById('seed-btn');
-    const statusDot = document.getElementById('status-dot');
 
-    // Auto-resize textarea
-    input.addEventListener('input', () => {
-        input.style.height = 'auto';
-        input.style.height = Math.min(input.scrollHeight, 120) + 'px';
-    });
+    message.innerHTML = html;
 
-    // Enter to send (shift+enter for newline)
-    input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            form.dispatchEvent(new Event('submit'));
-        }
-    });
+    messagesEl.appendChild(message);
 
-    function addMessage(content, type, meta = null) {
-        const div = document.createElement('div');
-        div.className = `message ${type}-message`;
-        
-        let html = `<div class="message-content">${content}</div>`;
-        
-        if (meta) {
-            html += `<div class="message-meta">`;
-            if (meta.status) {
-                const statusClass = meta.status === 'ANSWERED' ? 'status-answered' : 'status-abstained';
-                html += `<span class="meta-badge ${statusClass}">${meta.status}</span>`;
-            }
-            if (meta.confidence !== undefined) {
-                const confClass = meta.confidence >= 0.7 ? 'conf-high' : meta.confidence >= 0.4 ? 'conf-mid' : 'conf-low';
-                html += `<span class="meta-badge ${confClass}">Confidence: ${(meta.confidence * 100).toFixed(0)}%</span>`;
-            }
-            if (meta.temporal_mode && meta.temporal_mode !== 'NONE') {
-                html += `<span class="meta-badge meta-temporal">${meta.temporal_mode}</span>`;
-            }
-            if (meta.latency_ms) {
-                html += `<span class="meta-badge meta-latency">${meta.latency_ms.toFixed(0)}ms</span>`;
-            }
-            html += `</div>`;
-            
-            // Evidence section
-            if (meta.evidence && meta.evidence.length > 0) {
-                html += `<details class="evidence-details"><summary>Evidence (${meta.evidence.length} nodes)</summary><div class="evidence-list">`;
-                for (const e of meta.evidence) {
-                    html += `<div class="evidence-item">
-                        <span class="evidence-hop">hop ${e.hop}</span>
-                        <span class="evidence-text">${escapeHtml(e.text)}</span>
-                        ${e.session_id ? `<span class="evidence-session">${e.session_id}</span>` : ''}
-                    </div>`;
-                }
-                html += `</div></details>`;
-            }
-        }
-        
-        div.innerHTML = html;
-        messagesEl.appendChild(div);
-        messagesEl.scrollTop = messagesEl.scrollHeight;
+    messagesEl.scrollTop =
+        messagesEl.scrollHeight;
+
+}
+
+
+/* -------------------------------------------------------
+   Loading state
+------------------------------------------------------- */
+
+function addLoading() {
+
+    const message =
+        document.createElement('div');
+
+    message.className =
+        'message assistant-message loading-message';
+
+    message.id = 'loading';
+
+
+    message.innerHTML = `
+        <div class="message-row">
+
+            <div class="message-avatar">
+                R
+            </div>
+
+            <div class="message-main">
+
+                <div class="message-author">
+                    RippleGraph
+                </div>
+
+                <div class="loading-content">
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+
+    messagesEl.appendChild(message);
+
+    messagesEl.scrollTop =
+        messagesEl.scrollHeight;
+
+}
+
+
+function removeLoading() {
+
+    const loading =
+        document.getElementById('loading');
+
+    if (loading) {
+        loading.remove();
     }
 
-    function addLoading() {
-        const div = document.createElement('div');
-        div.className = 'message assistant-message loading-message';
-        div.id = 'loading';
-        div.innerHTML = `<div class="message-content"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
-        messagesEl.appendChild(div);
-        messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+
+/* -------------------------------------------------------
+   Submit question
+------------------------------------------------------- */
+
+form.addEventListener('submit', async (event) => {
+
+    event.preventDefault();
+
+
+    const query =
+        input.value.trim();
+
+
+    if (!query) {
+        return;
     }
 
-    function removeLoading() {
-        const el = document.getElementById('loading');
-        if (el) el.remove();
-    }
 
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
+    addMessage(
+        `<p>${escapeHtml(query)}</p>`,
+        'user'
+    );
 
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const query = input.value.trim();
-        if (!query) return;
 
-        addMessage(`<p>${escapeHtml(query)}</p>`, 'user');
-        input.value = '';
-        input.style.height = 'auto';
-        addLoading();
+    input.value = '';
 
-        try {
-            const res = await fetch('/answer', {
+    resizeInput();
+
+    sendBtn.disabled = true;
+
+    addLoading();
+
+
+    try {
+
+        const response =
+            await fetch('/answer', {
+
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({question: query}),
+
+                headers: {
+                    'Content-Type':
+                        'application/json'
+                },
+
+                body: JSON.stringify({
+                    question: query
+                })
+
             });
-            removeLoading();
 
-            if (!res.ok) {
-                const err = await res.json();
-                addMessage(`<p class="error">Error: ${err.detail || 'Unknown error'}</p>`, 'assistant');
-                return;
-            }
 
-            const data = await res.json();
-            const answerText = data.answer || data.reason || 'No answer available.';
-            addMessage(`<p>${escapeHtml(answerText)}</p>`, 'assistant', {
+        removeLoading();
+
+
+        if (!response.ok) {
+
+            const error =
+                await response.json();
+
+            addMessage(
+                `<p class="error">
+                    ${escapeHtml(
+                        error.detail ||
+                        'Something went wrong.'
+                    )}
+                </p>`,
+                'assistant'
+            );
+
+            return;
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const answer =
+            data.answer ||
+            data.reason ||
+            'No answer available.';
+
+
+        addMessage(
+            `<p>${escapeHtml(answer)}</p>`,
+            'assistant',
+            {
                 status: data.status,
                 confidence: data.confidence,
                 temporal_mode: data.temporal_mode,
                 latency_ms: data.latency_ms,
-                evidence: data.evidence || [],
-            });
-        } catch (err) {
-            removeLoading();
-            addMessage(`<p class="error">Network error: ${err.message}</p>`, 'assistant');
-        }
-    });
-
-    seedBtn.addEventListener('click', async () => {
-        seedBtn.disabled = true;
-        seedBtn.textContent = 'Seeding...';
-        try {
-            const res = await fetch('/demo/seed', {method: 'POST'});
-            const data = await res.json();
-            if (res.ok) {
-                addMessage(`<p>✅ ${data.message || `Seeded ${data.memories_created} memories.`}</p>`, 'system');
-            } else {
-                addMessage(`<p class="error">Seed failed: ${data.detail || 'Unknown error'}</p>`, 'system');
+                evidence: data.evidence || []
             }
-        } catch (err) {
-            addMessage(`<p class="error">Seed failed: ${err.message}</p>`, 'system');
-        }
-        seedBtn.disabled = false;
-        seedBtn.textContent = 'Seed Demo Data';
+        );
+
+
+    } catch (error) {
+
+        removeLoading();
+
+
+        addMessage(
+            `<p class="error">
+                Unable to reach the API:
+                ${escapeHtml(error.message)}
+            </p>`,
+            'assistant'
+        );
+
+    }
+
+
+    sendBtn.disabled = false;
+
+});
+
+
+/* -------------------------------------------------------
+   Example questions
+------------------------------------------------------- */
+
+document
+    .querySelectorAll('.example-question')
+    .forEach((button) => {
+
+        button.addEventListener('click', () => {
+
+            input.value =
+                button.dataset.question;
+
+            resizeInput();
+
+            input.focus();
+
+        });
+
     });
 
-    // Health check
-    fetch('/health').then(r => r.json()).then(d => {
-        statusDot.classList.add(d.status === 'ok' ? 'status-ok' : 'status-err');
-    }).catch(() => statusDot.classList.add('status-err'));
-    </script>
+
+/* -------------------------------------------------------
+   Seed demo memory
+------------------------------------------------------- */
+
+seedBtn.addEventListener('click', async () => {
+
+    const originalText =
+        seedBtn.textContent;
+
+
+    seedBtn.disabled = true;
+
+    seedBtn.textContent =
+        'Loading...';
+
+
+    try {
+
+        const response =
+            await fetch('/demo/seed', {
+                method: 'POST'
+            });
+
+
+        const data =
+            await response.json();
+
+
+        if (response.ok) {
+
+            addMessage(
+                `<p>
+                    ${escapeHtml(
+                        data.message ||
+                        `Loaded ${
+                            data.memories_created || 0
+                        } memories.`
+                    )}
+                </p>`,
+                'system'
+            );
+
+        } else {
+
+            addMessage(
+                `<p class="error">
+                    ${
+                        escapeHtml(
+                            data.detail ||
+                            'Unable to load sample memory.'
+                        )
+                    }
+                </p>`,
+                'system'
+            );
+
+        }
+
+
+    } catch (error) {
+
+        addMessage(
+            `<p class="error">
+                ${escapeHtml(error.message)}
+            </p>`,
+            'system'
+        );
+
+    }
+
+
+    seedBtn.disabled = false;
+
+    seedBtn.textContent =
+        originalText;
+
+});
+
+
+/* -------------------------------------------------------
+   API health
+------------------------------------------------------- */
+
+fetch('/health')
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        statusDot.classList.toggle(
+            'online',
+            data.status === 'ok'
+        );
+
+        statusDot.classList.toggle(
+            'offline',
+            data.status !== 'ok'
+        );
+
+    })
+
+    .catch(() => {
+
+        statusDot.classList.add('offline');
+
+    });
+
+</script>
+
 </body>
 </html>

@@ -15,12 +15,21 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    # ── HydraDB ──────────────────────────────────────────────
-    hydra_db_api_key: str = Field(description="HydraDB API key")
+    # ── PostgreSQL ─────────────────────────────────────────────
+    external_database_url: str = Field(default="", description="External PostgreSQL URL")
+    internal_database_url: str = Field(default="", description="Internal PostgreSQL URL")
+
+    # ── HydraDB (optional, legacy) ───────────────────────────
+    hydra_db_api_key: str = Field(default="", description="HydraDB API key")
     hydra_db_tenant_id: str = Field(default="hackhydra", description="HydraDB database name")
     hydra_db_sub_tenant_id: str = Field(
         default="demo-user", description="HydraDB collection (user scope)"
     )
+
+    @property
+    def database_url(self) -> str:
+        """Return the best available database URL. External works everywhere; internal only on Render."""
+        return self.external_database_url or self.internal_database_url
 
     # ── LLM Providers ────────────────────────────────────────
     llm_provider: str = Field(default="gemini", description="Active LLM provider")

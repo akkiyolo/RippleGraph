@@ -5,7 +5,7 @@ import logging
 import sys
 from pathlib import Path
 
-from ripplegraph.clients.hydra_client import HydraClient
+from ripplegraph.clients.pg_store import PgStore
 from ripplegraph.clients.llm_client import create_llm_client
 from ripplegraph.config import get_settings
 from ripplegraph.eval.runner import run_evaluation
@@ -20,11 +20,12 @@ def main() -> None:
 
     logger.info("=== RippleGraph Evaluation ===")
 
-    hydra = HydraClient(settings)
+    store = PgStore(settings)
+    store.initialize()
     llm = create_llm_client(settings)
 
     eval_path = sys.argv[1] if len(sys.argv) > 1 else "data/demo/eval_queries.json"
-    report = run_evaluation(eval_path, hydra, llm, settings)
+    report = run_evaluation(eval_path, store, llm, settings)
 
     # Print summary
     print("\n" + "=" * 60)

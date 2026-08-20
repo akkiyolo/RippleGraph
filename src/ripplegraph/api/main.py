@@ -20,18 +20,17 @@ from ripplegraph.api.schemas import (
     IngestRequest,
     IngestResponse,
 )
-from ripplegraph.clients.hydra_client import HydraClient
 from ripplegraph.clients.llm_client import create_llm_client
+from ripplegraph.clients.pg_store import PgStore
 from ripplegraph.config import get_settings
-from ripplegraph.ingestion.ingest import IngestionPipeline
-from ripplegraph.ingestion.loader import load_conversations
+from ripplegraph.ingestion.seed import seed_demo_data
 from ripplegraph.logging_config import setup_logging
 from ripplegraph.retrieval.query import execute_query
 
 logger = logging.getLogger(__name__)
 
 # Global state
-_hydra: HydraClient | None = None
+_store: PgStore | None = None
 _llm = None
 _settings = None
 
@@ -42,22 +41,33 @@ STATIC_DIR = Path(__file__).parent / "static"
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup/shutdown lifecycle."""
-    global _hydra, _llm, _settings
+    global _store, _llm, _settings
     _settings = get_settings()
     setup_logging(_settings.log_level)
     logger.info("Starting RippleGraph v%s", __version__)
+
+    # Initialize PostgreSQL
     try:
-        _hydra = HydraClient(_settings)
-        _hydra.ensure_database()
+        _store = PgStore(_settings)
+        _store.initialize()
+        logger.info("PostgreSQL store ready")
     except Exception as e:
-        logger.error("HydraDB init failed: %s", e)
-        _hydra = None
+        logger.error("PostgreSQL init failed: %s", e)
+        _store = None
+
+    # Initialize LLM
     try:
         _llm = create_llm_client(_settings)
+        logger.info("LLM client ready (%s)", _settings.llm_provider)
     except Exception as e:
         logger.error("LLM client init failed: %s", e)
         _llm = None
+
     yield
+
+    # Cleanup
+    if _store:
+        _store.close()
     logger.info("Shutting down RippleGraph")
 
 
@@ -80,15 +90,21 @@ if STATIC_DIR.exists():
 
 @app.get("/health", response_model=HealthResponse)
 async def health():
+    stats = None
+    if _store:
+        try:
+            stats = _store.get_stats()
+        except Exception:
+            pass
     return HealthResponse(status="ok", version=__version__)
 
 
 @app.post("/answer", response_model=AnswerResponse)
 async def answer(req: AnswerRequest):
-    if not _hydra or not _llm or not _settings:
+    if not _store or not _llm or not _settings:
         raise HTTPException(status_code=503, detail="Service not ready")
     try:
-        result = execute_query(req.question, _hydra, _llm, _settings)
+        result = execute_query(req.question, _store, _llm, _settings)
         return AnswerResponse(
             question=result.question,
             status=result.status.value,
@@ -110,13 +126,15 @@ async def answer(req: AnswerRequest):
 
 @app.post("/ingest", response_model=IngestResponse)
 async def ingest(req: IngestRequest):
-    if not _hydra or not _llm:
+    if not _store:
         raise HTTPException(status_code=503, detail="Service not ready")
     try:
-        sessions = load_conversations(req.conversations_path)
-        pipeline = IngestionPipeline(_hydra, _llm)
-        memories = pipeline.ingest_sessions(sessions)
-        return IngestResponse(status="ok", memories_created=len(memories), message=f"Ingested {len(memories)} memories from {len(sessions)} sessions")
+        count = seed_demo_data(_store, req.user_id)
+        return IngestResponse(
+            status="ok",
+            memories_created=count,
+            message=f"Loaded {count} memories with graph relations",
+        )
     except Exception as e:
         logger.error("Ingestion failed: %s\n%s", e, traceback.format_exc())
         raise HTTPException(status_code=500, detail=str(e))
@@ -125,30 +143,41 @@ async def ingest(req: IngestRequest):
 @app.post("/demo/seed", response_model=IngestResponse)
 async def demo_seed():
     """Seed the demo dataset."""
-    req = IngestRequest(conversations_path="data/demo/conversations.json")
+    req = IngestRequest(user_id="demo-user")
     return await ingest(req)
 
 
 @app.get("/memory/{memory_id}")
 async def get_memory(memory_id: str):
-    if not _hydra:
+    if not _store:
         raise HTTPException(status_code=503, detail="Service not ready")
-    try:
-        result = _hydra.inspect_context(memory_id)
-        return {"status": "ok", "data": str(result)}
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    result = _store.get_memory(memory_id)
+    if not result:
+        raise HTTPException(status_code=404, detail="Memory not found")
+    # Convert datetime objects to strings for JSON serialization
+    for key in result:
+        if hasattr(result[key], "isoformat"):
+            result[key] = result[key].isoformat()
+    return {"status": "ok", "data": result}
 
 
-@app.get("/graph/{user_id}")
-async def get_graph(user_id: str):
-    if not _hydra:
+@app.get("/stats")
+async def get_stats():
+    if not _store:
         raise HTTPException(status_code=503, detail="Service not ready")
-    try:
-        stats = _hydra.get_stats()
-        return {"status": "ok", "user_id": user_id, "stats": str(stats)}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    return {"status": "ok", **_store.get_stats()}
+
+
+@app.get("/memories")
+async def list_memories(user_id: str = "demo-user"):
+    if not _store:
+        raise HTTPException(status_code=503, detail="Service not ready")
+    memories = _store.get_all_memories(user_id)
+    for mem in memories:
+        for key in mem:
+            if hasattr(mem[key], "isoformat"):
+                mem[key] = mem[key].isoformat()
+    return {"status": "ok", "count": len(memories), "memories": memories}
 
 
 # ── Frontend Routes ──────────────────────────────────────
