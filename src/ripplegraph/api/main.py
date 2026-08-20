@@ -88,6 +88,32 @@ async def answer(req: AnswerRequest):
     if not _hydra or not _llm or not _settings:
         raise HTTPException(status_code=503, detail="Service not ready")
     try:
+        lower_q = req.question.strip().lower()
+        is_question = lower_q.endswith("?") or lower_q.startswith(
+            ("what", "who", "when", "where", "how", "why", "is", "are", "do", "does", "can", "could", "would", "should", "will", "did", "had", "has")
+        )
+
+        if not is_question:
+            from ripplegraph.models.conversation import ConversationSession, Message
+            msg = Message(speaker="user", text=req.question)
+            session = ConversationSession(
+                session_id="chat-session",
+                user_id=req.user_id,
+                messages=[msg]
+            )
+            pipeline = IngestionPipeline(_hydra, _llm)
+            memories = pipeline.ingest_sessions([session])
+            
+            if memories:
+                return AnswerResponse(
+                    question=req.question,
+                    status="ANSWERED",
+                    answer="Got it. I've committed this to my temporal memory.",
+                    confidence=1.0,
+                    temporal_mode="NONE",
+                    evidence=[],
+                )
+
         result = execute_query(req.question, _hydra, _llm, _settings)
         return AnswerResponse(
             question=result.question,
