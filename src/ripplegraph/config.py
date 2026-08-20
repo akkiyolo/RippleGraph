@@ -60,7 +60,7 @@ class Settings(BaseSettings):
         default=0.50, ge=0.0, le=1.0, description="Confidence threshold for abstention"
     )
     min_evidence_count: int = Field(
-        default=2, ge=1, description="Minimum evidence count before answering"
+        default=1, ge=1, description="Minimum evidence count before answering"
     )
 
     # ── Application ──────────────────────────────────────────
