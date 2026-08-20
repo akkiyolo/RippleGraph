@@ -26,6 +26,8 @@ from ripplegraph.config import get_settings
 from ripplegraph.ingestion.seed import seed_demo_data
 from ripplegraph.logging_config import setup_logging
 from ripplegraph.retrieval.query import execute_query
+from ripplegraph.models.memory import MemoryType, make_memory_id
+import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -104,6 +106,52 @@ async def answer(req: AnswerRequest):
     if not _store or not _llm or not _settings:
         raise HTTPException(status_code=503, detail="Service not ready")
     try:
+        lower_q = req.question.strip().lower()
+        is_question = lower_q.endswith("?") or lower_q.startswith(
+            ("what", "who", "when", "where", "how", "why", "is", "are", "do", "does", "can", "could", "would", "should", "will", "did", "had", "has")
+        )
+
+        if not is_question:
+            # Try to extract memory if it's a statement
+            segment_text = f"[user]: {req.question}"
+            raw_memories = _llm.extract_memories(segment_text, "chat-session")
+            stored_count = 0
+            
+            for raw in raw_memories:
+                importance = float(raw.get("importance", 0.5))
+                if importance < 0.3:
+                    continue
+                    
+                subject = raw.get("subject", "unknown")
+                predicate = raw.get("predicate", "unknown")
+                text = raw.get("text", "")
+                
+                if text:
+                    mem_id = make_memory_id("chat-session", subject, predicate, text)
+                    _store.upsert_memory(
+                        id=mem_id,
+                        type=raw.get("type", "FACT").upper(),
+                        subject=subject,
+                        predicate=predicate,
+                        object=raw.get("object", ""),
+                        text=text,
+                        user_id=req.user_id,
+                        session_id="chat-session",
+                        valid_from=datetime.datetime.now(),
+                        importance=importance,
+                    )
+                    stored_count += 1
+            
+            if stored_count > 0:
+                return AnswerResponse(
+                    question=req.question,
+                    status="ANSWERED",
+                    answer="Got it. I've committed this to my temporal memory.",
+                    confidence=1.0,
+                    temporal_mode="NONE",
+                    evidence=[],
+                )
+
         result = execute_query(req.question, _store, _llm, _settings)
         return AnswerResponse(
             question=result.question,
