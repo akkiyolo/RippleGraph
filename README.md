@@ -1,4 +1,6 @@
 # RippleGraph
+<img width="1895" height="908" alt="image" src="https://github.com/user-attachments/assets/e0a93e24-d3fd-4e4a-9a29-b5af400e31fc" />
+
 
 **Associative Temporal Memory for Long-Running AI Agents**
 
