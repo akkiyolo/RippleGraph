@@ -14,7 +14,7 @@
         "user_id": "demo-user",
         "messages": [
             {"message_id": "s2-m1", "speaker": "user", "text": "The frontend team prefers React for the UI framework.", "timestamp": "2026-03-05T14:00:00"},
-            {"message_id": "s2-m2", "speaker": "assistant", "text": "React is a solid choice. Should we use Next.js or plain React?", "timestamp": "2026-03-05T14:01:00"},
+            {"message_id": "s2-m2", "speaker": "assistant", "text": "React is solid choice. Should we use Next.js or plain React?", "timestamp": "2026-03-05T14:01:00"},
             {"message_id": "s2-m3", "speaker": "user", "text": "Let's use Next.js for server-side rendering.", "timestamp": "2026-03-05T14:02:00"},
             {"message_id": "s2-m4", "speaker": "assistant", "text": "Perfect. Next.js with React for the frontend.", "timestamp": "2026-03-05T14:03:00"},
             {"message_id": "s2-m5", "speaker": "user", "text": "Also, the deployment will be on AWS using ECS.", "timestamp": "2026-03-05T14:05:00"},
